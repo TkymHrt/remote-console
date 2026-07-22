@@ -1,0 +1,130 @@
+@import 'tailwindcss';
+
+@font-face {
+  font-family: 'LINE Seed JP';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('@fontsource/line-seed-jp/files/line-seed-jp-japanese-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'LINE Seed JP';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('@fontsource/line-seed-jp/files/line-seed-jp-japanese-700-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'LINE Seed JP';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('@fontsource/line-seed-jp/files/line-seed-jp-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'LINE Seed JP';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('@fontsource/line-seed-jp/files/line-seed-jp-latin-700-normal.woff2') format('woff2');
+}
+
+@theme inline {
+  --font-sans: 'LINE Seed JP', ui-sans-serif, system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 3px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+}
+
+:root {
+  color-scheme: dark;
+  font-family: 'LINE Seed JP', ui-sans-serif, system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --radius: 0.75rem;
+  --background: oklch(0.125 0.017 259);
+  --foreground: oklch(0.965 0.008 244);
+  --card: oklch(0.17 0.019 258 / 0.88);
+  --card-foreground: oklch(0.965 0.008 244);
+  --primary: oklch(0.78 0.145 171);
+  --primary-foreground: oklch(0.14 0.025 180);
+  --secondary: oklch(0.225 0.021 258);
+  --secondary-foreground: oklch(0.93 0.008 250);
+  --muted: oklch(0.22 0.018 258);
+  --muted-foreground: oklch(0.67 0.025 252);
+  --accent: oklch(0.235 0.027 254);
+  --accent-foreground: oklch(0.96 0.008 244);
+  --destructive: oklch(0.62 0.21 22);
+  --border: oklch(0.31 0.026 256 / 0.72);
+  --ring: oklch(0.78 0.145 171);
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  min-width: 320px;
+  background: var(--background);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100dvh;
+  margin: 0;
+  background: var(--background);
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+@keyframes loading {
+  0% {
+    transform: translateX(-110%);
+  }
+  50% {
+    transform: translateX(105%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
