@@ -11,7 +11,6 @@ const OFFLINE_STATUS: TargetStatus = {
   message: 'PCは停止中です。準備ができたら起動してください。',
   checkedAt: '2026-07-22T12:00:00.000Z',
   lastWakeAt: null,
-  readySince: null,
   canWake: true,
   retryAfterSeconds: 0,
   connectionUrl: null,

@@ -10,8 +10,6 @@ function probeResult(available: boolean, checkedAt: number): ProbeResult {
   return {
     available,
     checkedAt,
-    latencyMs: 1,
-    failure: available ? null : 'refused',
   }
 }
 

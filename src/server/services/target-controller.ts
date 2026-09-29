@@ -46,7 +46,6 @@ export class TargetController implements TargetControllerApi {
 
   #lastWakeAt: number | undefined
   #startupBeganAt: number | undefined
-  #readySince: number | undefined
   #failure: ControllerFailure | undefined
   #wakeLocked = false
 
@@ -111,7 +110,6 @@ export class TargetController implements TargetControllerApi {
 
       this.#lastWakeAt = now
       this.#startupBeganAt = now
-      this.#readySince = undefined
       this.#failure = undefined
 
       try {
@@ -136,13 +134,11 @@ export class TargetController implements TargetControllerApi {
 
   #applyProbeResult(result: ProbeResult): TargetStatus {
     if (result.available) {
-      this.#readySince ??= result.checkedAt
       this.#startupBeganAt = undefined
       this.#failure = undefined
       return this.#buildStatus('ready', result.checkedAt)
     }
 
-    this.#readySince = undefined
     if (this.#startupBeganAt !== undefined) {
       if (result.checkedAt - this.#startupBeganAt <= this.#startupTimeoutMs) {
         return this.#buildStatus('starting', result.checkedAt)
@@ -173,7 +169,6 @@ export class TargetController implements TargetControllerApi {
       message,
       checkedAt: new Date(checkedAt).toISOString(),
       lastWakeAt: this.#lastWakeAt === undefined ? null : new Date(this.#lastWakeAt).toISOString(),
-      readySince: this.#readySince === undefined ? null : new Date(this.#readySince).toISOString(),
       canWake: (status === 'offline' || status === 'error') && cooldown === 0 && !this.#wakeLocked,
       retryAfterSeconds: cooldown,
       connectionUrl: status === 'ready' ? this.#rdpUrl : null,

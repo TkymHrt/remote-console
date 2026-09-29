@@ -47,7 +47,6 @@ interface StatePresentation {
   label: string
   eyebrow: string
   Icon: LucideIcon
-  badge: 'offline' | 'starting' | 'ready' | 'error'
   orbClassName: string
   iconClassName: string
 }
@@ -57,7 +56,6 @@ const STATE_PRESENTATION: Record<TargetState, StatePresentation> = {
     label: '停止中',
     eyebrow: 'OFFLINE',
     Icon: WifiOff,
-    badge: 'offline',
     orbClassName:
       'border-slate-400/20 bg-slate-400/8 shadow-[0_0_70px_-20px_rgba(148,163,184,0.35)]',
     iconClassName: 'text-slate-300',
@@ -66,7 +64,6 @@ const STATE_PRESENTATION: Record<TargetState, StatePresentation> = {
     label: '起動処理中',
     eyebrow: 'BOOTING',
     Icon: Zap,
-    badge: 'starting',
     orbClassName:
       'border-amber-300/25 bg-amber-300/10 shadow-[0_0_80px_-16px_rgba(252,211,77,0.42)]',
     iconClassName: 'text-amber-300',
@@ -75,7 +72,6 @@ const STATE_PRESENTATION: Record<TargetState, StatePresentation> = {
     label: '接続可能',
     eyebrow: 'READY',
     Icon: Monitor,
-    badge: 'ready',
     orbClassName:
       'border-emerald-300/25 bg-emerald-300/10 shadow-[0_0_85px_-16px_rgba(110,231,183,0.45)]',
     iconClassName: 'text-emerald-300',
@@ -84,7 +80,6 @@ const STATE_PRESENTATION: Record<TargetState, StatePresentation> = {
     label: '要確認',
     eyebrow: 'ATTENTION',
     Icon: AlertTriangle,
-    badge: 'error',
     orbClassName:
       'border-rose-300/25 bg-rose-300/10 shadow-[0_0_80px_-18px_rgba(253,164,175,0.38)]',
     iconClassName: 'text-rose-300',
@@ -341,8 +336,8 @@ export function App() {
                       {status?.target.name ?? '自宅PC'}
                     </h1>
                   </div>
-                  {presentation ? (
-                    <Badge variant={presentation.badge}>
+                  {state && presentation ? (
+                    <Badge variant={state}>
                       <span className="size-1.5 rounded-full bg-current shadow-[0_0_8px_currentColor]" />
                       {presentation.label}
                     </Badge>

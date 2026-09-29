@@ -18,7 +18,6 @@ export const targetStatusSchema = z
     message: z.string().min(1).max(240),
     checkedAt: z.iso.datetime({ offset: true }),
     lastWakeAt: z.iso.datetime({ offset: true }).nullable(),
-    readySince: z.iso.datetime({ offset: true }).nullable(),
     canWake: z.boolean(),
     retryAfterSeconds: z.number().int().nonnegative(),
     connectionUrl: httpsUrlSchema.nullable(),

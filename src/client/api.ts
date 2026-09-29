@@ -2,38 +2,30 @@ import { apiErrorSchema, targetStatusSchema } from '@/shared/contracts'
 import type { TargetStatus } from '@/shared/contracts'
 
 export class ApiClientError extends Error {
-  readonly code: string
   readonly status: number
   readonly requestId: string | undefined
-  readonly retryAfterSeconds: number | undefined
 
   constructor(
     message: string,
     options: {
-      code: string
       status: number
       requestId?: string | undefined
-      retryAfterSeconds?: number | undefined
       cause?: unknown
     },
   ) {
     super(message, { cause: options.cause })
     this.name = 'ApiClientError'
-    this.code = options.code
     this.status = options.status
     this.requestId = options.requestId
-    this.retryAfterSeconds = options.retryAfterSeconds
   }
 }
 
 async function readJson(response: Response): Promise<unknown> {
-  const text = await response.text()
-  if (text === '') return null
   try {
-    return JSON.parse(text) as unknown
+    return (await response.json()) as unknown
   } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') throw error
     throw new ApiClientError('サーバーから不正な応答を受信しました。', {
-      code: 'INVALID_RESPONSE',
       status: response.status,
       cause: error,
     })
@@ -53,7 +45,6 @@ async function requestStatus(input: RequestInfo | URL, init?: RequestInit): Prom
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') throw error
     throw new ApiClientError('サーバーに接続できません。ネットワークを確認してください。', {
-      code: 'NETWORK_ERROR',
       status: 0,
       cause: error,
     })
@@ -64,14 +55,11 @@ async function requestStatus(input: RequestInfo | URL, init?: RequestInit): Prom
     const parsedError = apiErrorSchema.safeParse(body)
     if (parsedError.success) {
       throw new ApiClientError(parsedError.data.error.message, {
-        code: parsedError.data.error.code,
         status: response.status,
         requestId: parsedError.data.error.requestId,
-        retryAfterSeconds: parsedError.data.error.retryAfterSeconds,
       })
     }
     throw new ApiClientError('リクエストを処理できませんでした。', {
-      code: 'HTTP_ERROR',
       status: response.status,
     })
   }
@@ -79,7 +67,6 @@ async function requestStatus(input: RequestInfo | URL, init?: RequestInit): Prom
   const parsedStatus = targetStatusSchema.safeParse(body)
   if (!parsedStatus.success) {
     throw new ApiClientError('サーバーの状態応答を検証できませんでした。', {
-      code: 'INVALID_RESPONSE',
       status: response.status,
       cause: parsedStatus.error,
     })

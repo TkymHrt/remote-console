@@ -15,7 +15,6 @@ const OFFLINE_STATUS: TargetStatus = {
   message: 'PCは停止中です。準備ができたら起動してください。',
   checkedAt: '2026-07-22T12:00:00.000Z',
   lastWakeAt: null,
-  readySince: null,
   canWake: true,
   retryAfterSeconds: 0,
   connectionUrl: null,
@@ -39,7 +38,6 @@ const READY_STATUS: TargetStatus = {
   status: 'ready',
   message: 'RDPへの接続準備が完了しました。',
   checkedAt: '2026-07-22T12:00:20.000Z',
-  readySince: '2026-07-22T12:00:20.000Z',
   retryAfterSeconds: 45,
   connectionUrl: READY_URL,
 }
@@ -128,5 +126,26 @@ describe('Remote Console dashboard', () => {
       screen.getByText('サーバーに接続できません。ネットワークを確認してください。'),
     ).toBeTruthy()
     expect(screen.getByRole('button', { name: '再確認' })).toBeTruthy()
+  })
+
+  it('shows a safe, recoverable alert for an empty JSON response', async () => {
+    let requestCount = 0
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<typeof fetch>(async () => {
+        requestCount += 1
+        if (requestCount === 1) return new Response('', { status: 200 })
+        return jsonResponse(OFFLINE_STATUS)
+      }),
+    )
+    renderApplication()
+
+    const alert = await screen.findByRole('alert')
+    expect(alert.textContent).toContain('サーバーから不正な応答を受信しました。')
+    expect(screen.getByRole('button', { name: '再確認' })).toBeTruthy()
+
+    await userEvent.click(screen.getByRole('button', { name: '再確認' }))
+    expect(await screen.findByRole('button', { name: 'PCを起動する' })).toBeTruthy()
+    expect(screen.queryByRole('alert')).toBeNull()
   })
 })

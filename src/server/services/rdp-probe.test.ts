@@ -21,12 +21,12 @@ describe('TcpRdpProbe', () => {
       cacheMs: 1_000,
     })
     const ready = await probe.check(true)
-    expect(ready).toMatchObject({ available: true, failure: null })
+    expect(ready.available).toBe(true)
 
     await new Promise<void>((resolve, reject) => {
       server.close((error) => (error ? reject(error) : resolve()))
     })
     const offline = await probe.check(true)
-    expect(offline).toMatchObject({ available: false, failure: 'refused' })
+    expect(offline.available).toBe(false)
   })
 })

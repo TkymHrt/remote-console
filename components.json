@@ -4,7 +4,7 @@
   "rsc": false,
   "tsx": true,
   "tailwind": {
-    "css": "src/client/index.css",
+    "css": "src/client/styles.css",
     "baseColor": "slate",
     "cssVariables": true,
     "prefix": ""

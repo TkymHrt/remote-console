@@ -74,6 +74,8 @@ WOL magic packetは`FF` 6バイトとMACアドレス16回からなる102バイ�
 | `GET`  | `/api/status` | body/queryともになし                               | `200 TargetStatus`                                              |
 | `POST` | `/api/wake`   | `Content-Type: application/json`、bodyは厳密に`{}` | packet送信時`202 TargetStatus`、既にreadyなら`200 TargetStatus` |
 
+`TargetStatus`の日時は最新の判定時刻`checkedAt`と最後の起動操作時刻`lastWakeAt`（操作前は`null`）です。接続可能になった時刻は保持しません。
+
 `/api/wake`へ`{"ip":"..."}`、`{"macAddress":"..."}`などを渡すと`400 INVALID_REQUEST`です。`/api/status?ip=...`など、どちらのAPIもquery parameterを拒否します。
 
 エラー形式:
