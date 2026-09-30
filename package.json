@@ -12,7 +12,9 @@
     "test": "vp test",
     "start": "node --env-file-if-exists=.env dist/server/index.mjs",
     "deploy:provision": "node --env-file=.env.deploy.local deploy/provision.mjs",
-    "deploy:prepare": "node deploy/prepare.mjs"
+    "deploy:prepare": "node deploy/prepare.mjs",
+    "deploy:stage": "pnpm install --frozen-lockfile && pnpm check && pnpm test && node deploy/prepare.mjs --local",
+    "deploy:update": "pnpm run deploy:stage && sudo sh deploy/install.sh --app-only .deploy/bundle"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.2",

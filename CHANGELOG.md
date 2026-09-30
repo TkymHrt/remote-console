@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-30 — Git-based application updates
+
+- 本番opsadminの`~/remote-console`をmain checkoutとして使い、`git pull --ff-only`と`pnpm run deploy:update`で更新する方式を追加。
+- 既存Node runtimeをビルドにも利用し、package.json指定のpnpmをユーザーの`~/.local`へ導入するsetup scriptを追加。ビルドは非root、sudoは配置のみ。
+- `deploy:stage`でfrozen install・静的チェック・テスト・ビルド・commit記録を行い、共通installerの`--app-only`で配置する。trackedな未コミット変更は拒否。
+- 通常更新ではPC/Access環境設定・Tunnel token・Node runtime・cloudflaredを変更しない。新しいreleaseへ切り替え、匿名origin APIの401を起動確認し、起動失敗時は前のアプリ参照へ戻す。
+- Cloudflare初回構築/設定変更と、既存サーバーのアプリ更新の手順を分離。
+
 ## 2026-09-30 — Production deployment automation
 
 - Wrangler 4.143.0を開発依存へ追加。既存OAuth認証を利用して個人アカウント/zoneを発見し、必要なDNS/Zero Trust権限は本人承認の専用APIトークンで取得。対象アカウント/zoneのみ、期限7日、ローカル0600で保存。

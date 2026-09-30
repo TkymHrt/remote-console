@@ -6,23 +6,42 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const privateDirectory = resolve(root, ".deploy");
-const state = JSON.parse(await readFile(resolve(privateDirectory, "state.json"), "utf8"));
+const local = process.argv.includes("--local");
+const state = local
+  ? undefined
+  : JSON.parse(await readFile(resolve(privateDirectory, "state.json"), "utf8"));
 const bundle = resolve(privateDirectory, "bundle");
 const remoteDirectory = "/home/opsadmin/remote-console-deploy";
-const architecture = execFileSync("ssh", [state.sshHost, "uname -m"], { encoding: "utf8" }).trim();
-if (architecture !== "x86_64") throw new Error(`Unsupported target architecture: ${architecture}`);
+if (!local) {
+  const architecture = execFileSync("ssh", [state.sshHost, "uname -m"], {
+    encoding: "utf8",
+  }).trim();
+  if (architecture !== "x86_64")
+    throw new Error(`Unsupported target architecture: ${architecture}`);
+}
+execFileSync("git", ["diff", "--quiet", "HEAD"], { cwd: root, stdio: "inherit" });
+const revision = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
 execFileSync("pnpm", ["run", "build"], { cwd: root, stdio: "inherit" });
 await rm(bundle, { recursive: true, force: true });
 await mkdir(bundle, { recursive: true, mode: 0o700 });
 await cp(resolve(root, "dist"), resolve(bundle, "dist"), { recursive: true });
-for (const file of ["application.env", "tunnel-token"])
-  await cp(resolve(privateDirectory, file), resolve(bundle, file));
+if (!local) {
+  for (const file of ["application.env", "tunnel-token"])
+    await cp(resolve(privateDirectory, file), resolve(bundle, file));
+}
 await cp(resolve(root, "deploy/install.sh"), resolve(bundle, "install.sh"));
 const service = (await readFile(resolve(root, "deploy/remote-console.service"), "utf8")).replace(
   "/usr/bin/node",
   "/opt/remote-console/runtime/bin/node",
 );
 await writeFile(resolve(bundle, "remote-console.service"), service);
+await writeFile(resolve(bundle, "source-revision"), `${revision}\n`);
+if (local) {
+  console.log(
+    `Staged application revision ${revision}; production configuration and runtimes are not copied.`,
+  );
+  process.exit(0);
+}
 
 async function download(url, destination) {
   const response = await fetch(url);

@@ -63,7 +63,7 @@ pnpm start     # .envがあれば読み込んでビルド済みアプリを起�
 
 ## 本番の自動配置
 
-アプリはWorkersへ移さない。WranglerはローカルのCloudflare認証・Tunnel作成に使用し、NodeアプリとcloudflaredはLXC上で稼働する。Wranglerや`node_modules`を本番へコピーしない。
+アプリはWorkersへ移さない。WranglerはローカルのCloudflare認証・初回Tunnel作成に使用し、NodeアプリとcloudflaredはLXC上で稼働する。通常のアプリ更新は本番サーバーのgit checkoutでビルドし、Cloudflare APIや秘密設定のコピーを必要としない。
 
 ```sh
 pnpm install --frozen-lockfile
@@ -90,7 +90,35 @@ ssh -t remote-console 'sudo sh /home/opsadmin/remote-console-deploy/install.sh'
 
 installerは`/opt/remote-console/runtime/bin/node`とroot所有の成果物、root 0600のEnvironmentFileを配置し、専用ユーザーのsystemdサービスを起動する。cloudflaredは公式`service install` generatorを使い、常駐プロセスは`/etc/cloudflared/token`を参照する。秘密値をログへ出さない。
 
-更新も同じ`deploy:prepare`とsudoコマンドを使う。ローカル`.deploy/`とリモートのアップロードディレクトリには秘密ファイルが含まれるため、配置・検証後は不要なコピーを削除する。Token失効後のCloudflare再設定には再発行が必要だが、常駐Tunnelと通常のアプリ更新はこのAPIトークンに依存しない。
+`deploy:prepare`と上記sudoコマンドは**初回配置・Node/cloudflared runtime変更**用。通常更新は以下のgit手順を使う。ローカル`.deploy/`と初回アップロードディレクトリには秘密ファイルが含まれるため、配置・検証後は不要なコピーを削除する。
+
+### 通常更新: 本番でgit pullして配置
+
+本番のcheckoutは`/home/opsadmin/remote-console`、ブランチは`main`。ビルド用Nodeは既存の`/opt/remote-console/runtime/bin/node`、pnpmはpackage.jsonで指定されたバージョンをopsadminの`~/.local`へ導入する。Ubuntu既定の`.profile`が`~/.local/bin`をPATHへ追加するので、新しいSSHログインで`node`/`pnpm`が使える。
+
+```sh
+ssh remote-console
+cd ~/remote-console
+git pull --ff-only
+pnpm run deploy:update
+```
+
+`deploy:update`はfrozen-lockfile install → format/lint/型チェック → テスト → 本番ビルド → sudoでアプリ配置を実行する。sudoパスワードは本人の端末へ入力する。ビルドはrootで行わず、サービスユーザーにもcheckoutや開発用node_modulesを与えない。
+
+配置先はroot所有の新しいreleaseディレクトリ。`dist`の参照先を切り替えてremote-consoleだけを再起動し、localhostのJWTなしAPIが401になるまで起動を確認する。失敗時は以前のアプリ参照へ戻す。実行後に配置したGit commitを表示する。
+
+この経路は`/etc/remote-console/remote-console.env`、`/etc/cloudflared/token`、Node runtime、cloudflaredサービス、CloudflareのDNS/Access/Tunnelを変更しない。通常更新にAPIトークン・`.env.deploy.local`・`.deploy/state.json`は不要。Node/cloudflaredやPC/Cloudflare設定の変更は初回配置経路で別途行う。
+
+trackedなローカル変更があるcheckoutは配置しない。`git pull --ff-only`が失敗した場合も、自動resetや変更削除は行わず原因を確認する。
+
+別のサーバーを同じ方式へ導入する場合、初回配置後にopsadminとして以下を一度実行する。
+
+```sh
+git clone --branch main https://github.com/TkymHrt/remote-console.git ~/remote-console
+sh ~/remote-console/deploy/setup-build-env.sh
+```
+
+新しいSSHログインで通常更新コマンドを使う。既存の秘密設定をgit checkoutへコピーしない。
 
 ### 現在の本番確認
 
