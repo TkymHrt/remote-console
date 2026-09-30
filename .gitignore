@@ -6,4 +6,5 @@ dist/
 *.log
 .vite/
 coverage/
+.impeccable/review/
 .DS_Store

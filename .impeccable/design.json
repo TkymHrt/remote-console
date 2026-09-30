@@ -1,0 +1,430 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-29T18:58:30Z",
+  "title": "Design System: Remote Console",
+  "extensions": {
+    "colorMeta": {
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Canvas",
+        "canonical": "#f3f1eb",
+        "tonalRamp": [
+          "oklch(15% 0.015 92)",
+          "oklch(27% 0.015 92)",
+          "oklch(39% 0.015 92)",
+          "oklch(51% 0.015 92)",
+          "oklch(63% 0.015 92)",
+          "oklch(75% 0.015 92)",
+          "oklch(86% 0.015 92)",
+          "oklch(95% 0.015 92)"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#fffcf7",
+        "tonalRamp": [
+          "oklch(15% 0.012 92)",
+          "oklch(27% 0.012 92)",
+          "oklch(39% 0.012 92)",
+          "oklch(51% 0.012 92)",
+          "oklch(63% 0.012 92)",
+          "oklch(75% 0.012 92)",
+          "oklch(86% 0.012 92)",
+          "oklch(95% 0.012 92)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#242b27",
+        "tonalRamp": [
+          "oklch(15% 0.018 155)",
+          "oklch(27% 0.018 155)",
+          "oklch(39% 0.018 155)",
+          "oklch(51% 0.018 155)",
+          "oklch(63% 0.018 155)",
+          "oklch(75% 0.018 155)",
+          "oklch(86% 0.018 155)",
+          "oklch(95% 0.018 155)"
+        ]
+      },
+      "muted-ink": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#526058",
+        "tonalRamp": [
+          "oklch(15% 0.018 155)",
+          "oklch(27% 0.018 155)",
+          "oklch(39% 0.018 155)",
+          "oklch(51% 0.018 155)",
+          "oklch(63% 0.018 155)",
+          "oklch(75% 0.018 155)",
+          "oklch(86% 0.018 155)",
+          "oklch(95% 0.018 155)"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#d8ddd5",
+        "tonalRamp": [
+          "oklch(15% 0.012 135)",
+          "oklch(27% 0.012 135)",
+          "oklch(39% 0.012 135)",
+          "oklch(51% 0.012 135)",
+          "oklch(63% 0.012 135)",
+          "oklch(75% 0.012 135)",
+          "oklch(86% 0.012 135)",
+          "oklch(95% 0.012 135)"
+        ]
+      },
+      "command-blue": {
+        "role": "primary",
+        "displayName": "Command Blue",
+        "canonical": "#284ca8",
+        "tonalRamp": [
+          "oklch(15% 0.14 265)",
+          "oklch(27% 0.14 265)",
+          "oklch(39% 0.14 265)",
+          "oklch(51% 0.14 265)",
+          "oklch(63% 0.14 265)",
+          "oklch(75% 0.14 265)",
+          "oklch(86% 0.14 265)",
+          "oklch(95% 0.14 265)"
+        ]
+      },
+      "command-hover": {
+        "role": "primary",
+        "displayName": "Command Blue Hover",
+        "canonical": "#1a397e",
+        "tonalRamp": [
+          "oklch(15% 0.14 265)",
+          "oklch(27% 0.14 265)",
+          "oklch(39% 0.14 265)",
+          "oklch(51% 0.14 265)",
+          "oklch(63% 0.14 265)",
+          "oklch(75% 0.14 265)",
+          "oklch(86% 0.14 265)",
+          "oklch(95% 0.14 265)"
+        ]
+      },
+      "command-white": {
+        "role": "neutral",
+        "displayName": "Command White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0.001 95)",
+          "oklch(27% 0.001 95)",
+          "oklch(39% 0.001 95)",
+          "oklch(51% 0.001 95)",
+          "oklch(63% 0.001 95)",
+          "oklch(75% 0.001 95)",
+          "oklch(86% 0.001 95)",
+          "oklch(95% 0.001 95)"
+        ]
+      },
+      "focus-ochre": {
+        "role": "secondary",
+        "displayName": "Focus Ochre",
+        "canonical": "#b9681e",
+        "tonalRamp": [
+          "oklch(15% 0.13 62)",
+          "oklch(27% 0.13 62)",
+          "oklch(39% 0.13 62)",
+          "oklch(51% 0.13 62)",
+          "oklch(63% 0.13 62)",
+          "oklch(75% 0.13 62)",
+          "oklch(86% 0.13 62)",
+          "oklch(95% 0.13 62)"
+        ]
+      },
+      "idle-slate": {
+        "role": "secondary",
+        "displayName": "Idle Slate",
+        "canonical": "#68766e",
+        "tonalRamp": [
+          "oklch(15% 0.025 155)",
+          "oklch(27% 0.025 155)",
+          "oklch(39% 0.025 155)",
+          "oklch(51% 0.025 155)",
+          "oklch(63% 0.025 155)",
+          "oklch(75% 0.025 155)",
+          "oklch(86% 0.025 155)",
+          "oklch(95% 0.025 155)"
+        ]
+      },
+      "waiting-ochre": {
+        "role": "secondary",
+        "displayName": "Waiting Ochre",
+        "canonical": "#a66c20",
+        "tonalRamp": [
+          "oklch(15% 0.11 69)",
+          "oklch(27% 0.11 69)",
+          "oklch(39% 0.11 69)",
+          "oklch(51% 0.11 69)",
+          "oklch(63% 0.11 69)",
+          "oklch(75% 0.11 69)",
+          "oklch(86% 0.11 69)",
+          "oklch(95% 0.11 69)"
+        ]
+      },
+      "ready-green": {
+        "role": "secondary",
+        "displayName": "Ready Green",
+        "canonical": "#277361",
+        "tonalRamp": [
+          "oklch(15% 0.075 170)",
+          "oklch(27% 0.075 170)",
+          "oklch(39% 0.075 170)",
+          "oklch(51% 0.075 170)",
+          "oklch(63% 0.075 170)",
+          "oklch(75% 0.075 170)",
+          "oklch(86% 0.075 170)",
+          "oklch(95% 0.075 170)"
+        ]
+      },
+      "fault-red": {
+        "role": "secondary",
+        "displayName": "Fault Red",
+        "canonical": "#b0443d",
+        "tonalRamp": [
+          "oklch(15% 0.12 29)",
+          "oklch(27% 0.12 29)",
+          "oklch(39% 0.12 29)",
+          "oklch(51% 0.12 29)",
+          "oklch(63% 0.12 29)",
+          "oklch(75% 0.12 29)",
+          "oklch(86% 0.12 29)",
+          "oklch(95% 0.12 29)"
+        ]
+      },
+      "alert-paper": {
+        "role": "secondary",
+        "displayName": "Alert Paper",
+        "canonical": "#fff0eb",
+        "tonalRamp": [
+          "oklch(15% 0.03 29)",
+          "oklch(27% 0.03 29)",
+          "oklch(39% 0.03 29)",
+          "oklch(51% 0.03 29)",
+          "oklch(63% 0.03 29)",
+          "oklch(75% 0.03 29)",
+          "oklch(86% 0.03 29)",
+          "oklch(95% 0.03 29)"
+        ]
+      },
+      "alert-line": {
+        "role": "secondary",
+        "displayName": "Alert Line",
+        "canonical": "#eac9bf",
+        "tonalRamp": [
+          "oklch(15% 0.045 29)",
+          "oklch(27% 0.045 29)",
+          "oklch(39% 0.045 29)",
+          "oklch(51% 0.045 29)",
+          "oklch(63% 0.045 29)",
+          "oklch(75% 0.045 29)",
+          "oklch(86% 0.045 29)",
+          "oklch(95% 0.045 29)"
+        ]
+      },
+      "alert-ink": {
+        "role": "secondary",
+        "displayName": "Alert Ink",
+        "canonical": "#903b33",
+        "tonalRamp": [
+          "oklch(15% 0.11 29)",
+          "oklch(27% 0.11 29)",
+          "oklch(39% 0.11 29)",
+          "oklch(51% 0.11 29)",
+          "oklch(63% 0.11 29)",
+          "oklch(75% 0.11 29)",
+          "oklch(86% 0.11 29)",
+          "oklch(95% 0.11 29)"
+        ]
+      },
+      "disabled-paper": {
+        "role": "neutral",
+        "displayName": "Disabled Paper",
+        "canonical": "#e6e9e3",
+        "tonalRamp": [
+          "oklch(15% 0.012 145)",
+          "oklch(27% 0.012 145)",
+          "oklch(39% 0.012 145)",
+          "oklch(51% 0.012 145)",
+          "oklch(63% 0.012 145)",
+          "oklch(75% 0.012 145)",
+          "oklch(86% 0.012 145)",
+          "oklch(95% 0.012 145)"
+        ]
+      },
+      "disabled-ink": {
+        "role": "neutral",
+        "displayName": "Disabled Ink",
+        "canonical": "#47554f",
+        "tonalRamp": [
+          "oklch(15% 0.018 155)",
+          "oklch(27% 0.018 155)",
+          "oklch(39% 0.018 155)",
+          "oklch(51% 0.018 155)",
+          "oklch(63% 0.018 155)",
+          "oklch(75% 0.018 155)",
+          "oklch(86% 0.018 155)",
+          "oklch(95% 0.018 155)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Status Display",
+        "purpose": "Current PC state only."
+      },
+      "headline": {
+        "displayName": "Device Heading",
+        "purpose": "PC name."
+      },
+      "command": {
+        "displayName": "Primary Command",
+        "purpose": "One next action."
+      },
+      "body": {
+        "displayName": "State Explanation",
+        "purpose": "Short operational explanation."
+      },
+      "support": {
+        "displayName": "Support",
+        "purpose": "Checking line, note, and details."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sheet",
+        "value": "0 25px 50px -42px #303b345c",
+        "purpose": "The one operative paper sheet."
+      },
+      {
+        "name": "command",
+        "value": "0 12px 22px -16px #1a397e99",
+        "purpose": "Available primary command."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-change",
+        "value": "220ms cubic-bezier(0.18, 0.84, 0.22, 1)",
+        "purpose": "Brief state text transition; disabled under reduced motion."
+      },
+      {
+        "name": "signal-breathe",
+        "value": "1.8s ease-in-out infinite",
+        "purpose": "Starting status dot only; disabled under reduced motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "narrow-desktop",
+        "value": "800px"
+      },
+      {
+        "name": "mobile",
+        "value": "620px"
+      },
+      {
+        "name": "compact",
+        "value": "390px"
+      },
+      {
+        "name": "small-phone",
+        "value": "360px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary command",
+      "kind": "button",
+      "refersTo": "primary-command",
+      "description": "One available wake, retry, or remote-desktop action.",
+      "html": "<button class=\"ds-command\">PCを起動する<svg viewBox=\"0 0 24 24\" width=\"21\" height=\"21\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 2v10\"/><path d=\"M18.36 6.64a9 9 0 1 1-12.72 0\"/></svg></button>",
+      "css": ".ds-command {display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:72px;padding:15px 21px;border:0;border-radius:8px;background:var(--command,#284ca8);box-shadow:0 12px 22px -16px #1a397e99;color:#fff;font:700 16px/1.5 \"LINE Seed JP\",sans-serif;cursor:pointer;transition:background-color 160ms ease,transform 160ms ease;} .ds-command:hover {background:var(--command-hover,#1a397e);transform:translateY(-1px);} .ds-command:active {transform:translateY(1px);} .ds-command:focus-visible {outline:3px solid var(--focus,#b9681e);outline-offset:4px;}"
+    },
+    {
+      "name": "Disabled command",
+      "kind": "button",
+      "refersTo": "primary-command-disabled",
+      "description": "Waiting or cooldown, without an actionable accent.",
+      "html": "<button class=\"ds-command-disabled\" disabled>接続を待っています</button>",
+      "css": ".ds-command-disabled {min-height:72px;padding:15px 21px;border:0;border-radius:8px;background:#e6e9e3;color:#47554f;font:700 16px/1.5 \"LINE Seed JP\",sans-serif;cursor:not-allowed;}"
+    },
+    {
+      "name": "Status sheet",
+      "kind": "card",
+      "refersTo": "status-sheet",
+      "description": "The one continuous reading and command surface.",
+      "html": "<section class=\"ds-sheet\"><span class=\"ds-meta\"><i class=\"ds-dot\" aria-hidden=\"true\"></i>状態を自動で確認</span><h2>オフライン</h2><p>PCからの応答がありません。</p></section>",
+      "css": ".ds-sheet {padding:32px 48px 48px;border-radius:12px;background:var(--paper,#fffcf7);box-shadow:0 25px 50px -42px #303b345c;color:var(--ink,#242b27);font-family:\"LINE Seed JP\",sans-serif;} .ds-meta {display:flex;align-items:center;color:var(--muted,#526058);font-size:13px;} .ds-dot {display:inline-block;width:9px;height:9px;margin-right:10px;border-radius:50%;background:#68766e;} .ds-sheet h2 {margin:35px 0 16px;font-size:42px;line-height:1.23;letter-spacing:-.035em;} .ds-sheet p {margin:0;color:var(--muted,#526058);font-size:16px;line-height:1.75;}"
+    },
+    {
+      "name": "Error notice",
+      "kind": "custom",
+      "refersTo": "error-notice",
+      "description": "Recoverable API or wake failure message.",
+      "html": "<div class=\"ds-error\" role=\"alert\"><strong>状態を確認できませんでした</strong><p>ネットワークを確認してください。</p></div>",
+      "css": ".ds-error {padding:15px 17px;border:1px solid #eac9bf;border-radius:8px;background:#fff0eb;color:#903b33;font:400 13px/1.65 \"LINE Seed JP\",sans-serif;} .ds-error strong {font-size:14px;} .ds-error p {margin:4px 0 0;}"
+    },
+    {
+      "name": "Refresh control",
+      "kind": "button",
+      "refersTo": "button-refresh",
+      "description": "Secondary status refresh in the header.",
+      "html": "<button class=\"ds-refresh\">状態を更新</button>",
+      "css": ".ds-refresh {min-height:44px;padding:0 12px;border:1px solid transparent;border-radius:7px;background:transparent;color:var(--muted,#526058);font:700 13px \"LINE Seed JP\",sans-serif;cursor:pointer;} .ds-refresh:hover {border-color:var(--rule,#d8ddd5);background:var(--paper,#fffcf7);color:var(--ink,#242b27);} .ds-refresh:focus-visible {outline:3px solid var(--focus,#b9681e);outline-offset:4px;}"
+    },
+    {
+      "name": "Connection disclosure",
+      "kind": "custom",
+      "refersTo": "details-trigger",
+      "description": "Secondary history and access information.",
+      "html": "<details class=\"ds-details\"><summary>接続と履歴</summary><p>外部接続　Cloudflare Access</p></details>",
+      "css": ".ds-details {border-top:1px solid var(--rule,#d8ddd5);color:var(--muted,#526058);font:700 13px \"LINE Seed JP\",sans-serif;} .ds-details summary {min-height:56px;display:flex;align-items:center;width:max-content;margin-left:auto;cursor:pointer;} .ds-details summary:hover {color:var(--ink,#242b27);} .ds-details summary:focus-visible {outline:3px solid var(--focus,#b9681e);outline-offset:4px;} .ds-details p {font-weight:400;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Dispatch Sheet",
+    "overview": "Remote Console is a quiet, single-purpose operation sheet. A person away from home reads the one machine's state, sends a wake request if needed, and enters the remote desktop when it responds. Warm paper and dark ink provide the stable field; one blue command carries the next available action. The sheet is not a simulated paper texture or a dashboard of separate cards. It is a clear sequence of state, action, and supporting evidence.",
+    "keyCharacteristics": [
+      "One continuous sheet with a small checking line, a large state, and a single command row.",
+      "Restrained state colors on a written signal; never color alone.",
+      "Warm neutral ground, white paper, quiet rules, and a blue action that is present only when usable.",
+      "Connection mechanics and wake history behind a native disclosure below the task."
+    ],
+    "rules": [
+      {
+        "name": "The Action-Only Blue Rule",
+        "body": "The saturated blue is reserved for an available primary action, not metadata or decorative progress.",
+        "section": "colors"
+      },
+      {
+        "name": "The State First Rule",
+        "body": "The state word is the largest text on the sheet; explanation follows it, without a preceding kicker.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Next Step Rule",
+        "body": "Never place wake and remote-desktop actions side by side. The available control changes with the server state.",
+        "section": "layout"
+      }
+    ],
+    "dos": [
+      "Do make the current state and one next action visible on the first mobile viewport.",
+      "Do keep checking time and connection details secondary but available.",
+      "Do preserve readable disabled states, keyboard focus, and reduced-motion behavior."
+    ],
+    "donts": [
+      "Don't infer that a silent RDP port proves the PC is powered off; say it is offline or unresponsive.",
+      "Don't use blue for inactive controls or show a ready link when the latest status request has failed.",
+      "Don't turn the sheet into a grid of cards, a progress meter, or a decorative paper imitation."
+    ]
+  }
+}

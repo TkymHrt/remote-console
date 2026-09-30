@@ -90,8 +90,10 @@ describe('Remote Console dashboard', () => {
     expect(wakeButton.hasAttribute('disabled')).toBe(false)
     await userEvent.click(wakeButton)
 
-    expect(await screen.findByRole('button', { name: 'RDPの準備を待っています' })).toBeTruthy()
-    expect(screen.getAllByText('起動処理中')).toHaveLength(2)
+    expect(
+      (await screen.findByRole('button', { name: '接続を待っています' })).hasAttribute('disabled'),
+    ).toBe(true)
+    expect(screen.getByRole('heading', { name: '接続を準備中' })).toBeTruthy()
 
     const wakeCall = fetchMock.mock.calls.find(([input]) => requestUrl(input) === '/api/wake')
     expect(wakeCall).toBeTruthy()
@@ -122,6 +124,7 @@ describe('Remote Console dashboard', () => {
     renderApplication()
 
     expect(await screen.findByRole('alert')).toBeTruthy()
+    expect(screen.getByText('状態を確認できませんでした')).toBeTruthy()
     expect(
       screen.getByText('サーバーに接続できません。ネットワークを確認してください。'),
     ).toBeTruthy()
@@ -147,5 +150,25 @@ describe('Remote Console dashboard', () => {
     await userEvent.click(screen.getByRole('button', { name: '再確認' }))
     expect(await screen.findByRole('button', { name: 'PCを起動する' })).toBeTruthy()
     expect(screen.queryByRole('alert')).toBeNull()
+  })
+
+  it('does not offer a stale connection link when a later status check fails', async () => {
+    let requestCount = 0
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<typeof fetch>(async () => {
+        requestCount += 1
+        if (requestCount === 1) return jsonResponse(READY_STATUS)
+        throw new TypeError('connection refused')
+      }),
+    )
+    renderApplication()
+
+    expect(await screen.findByRole('link', { name: 'リモートデスクトップを開く' })).toBeTruthy()
+    await userEvent.click(screen.getByRole('button', { name: '状態を再確認' }))
+
+    expect(await screen.findByRole('heading', { name: '確認できません' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: '再確認' })).toBeTruthy()
+    expect(screen.queryByRole('link', { name: 'リモートデスクトップを開く' })).toBeNull()
   })
 })
