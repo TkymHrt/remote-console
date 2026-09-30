@@ -49,6 +49,28 @@ chown -R root:remote-console "$release"
 chmod -R g+rX "$release"
 previous=
 if [ -L "$app/dist" ]; then previous=$(readlink "$app/dist"); fi
+if [ "$mode" = app-only ]; then
+  cp -p /etc/systemd/system/remote-console.service "$release/previous.service"
+  rollback_update() {
+    status=$?
+    trap - 0 HUP INT TERM
+    if [ "$status" -ne 0 ]; then
+      set +e
+      install -o root -g root -m 0644 "$release/previous.service" /etc/systemd/system/remote-console.service
+      ln -s "$previous" "$app/.dist-rollback.$$"
+      mv -Tf "$app/.dist-rollback.$$" "$app/dist"
+      systemctl daemon-reload
+      if systemctl restart remote-console.service; then
+        printf '%s\n' 'Update failed; previous application and service unit restored.' >&2
+      else
+        printf '%s\n' 'Update failed; previous files restored but service restart also failed.' >&2
+      fi
+    fi
+    exit "$status"
+  }
+  trap rollback_update 0
+  trap 'exit 1' HUP INT TERM
+fi
 if systemctl cat remote-console.service >/dev/null 2>&1; then
   systemctl stop remote-console.service
 fi
@@ -69,12 +91,17 @@ systemctl daemon-reload
 systemctl enable --now remote-console.service
 
 # The origin must be listening and reject anonymous API access before success.
-if ! "$app/runtime/bin/node" --input-type=module -e '
+"$app/runtime/bin/node" --input-type=module - "$config/remote-console.env" <<'NODE'
+  import { readFileSync } from "node:fs";
+  import { parseEnv } from "node:util";
   import { setTimeout } from "node:timers/promises";
+  const environment = parseEnv(readFileSync(process.argv[2], "utf8"));
+  const port = Number(environment.PORT ?? 3000);
+  if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error("Invalid production PORT");
   const deadline = Date.now() + 10000;
   while (Date.now() < deadline) {
     try {
-      const response = await fetch("http://127.0.0.1:3000/api/pc");
+      const response = await fetch(`http://127.0.0.1:${port}/api/pc`);
       if (response.status === 401) process.exit(0);
       throw new Error(`Origin returned ${response.status}, expected 401`);
     } catch (error) {
@@ -83,15 +110,7 @@ if ! "$app/runtime/bin/node" --input-type=module -e '
     await setTimeout(100);
   }
   throw new Error("Origin startup timed out");
-'; then
-  if [ -n "$previous" ] && [ "$mode" = app-only ]; then
-    ln -s "$previous" "$app/.dist-rollback.$$"
-    mv -Tf "$app/.dist-rollback.$$" "$app/dist"
-    systemctl restart remote-console.service
-    printf '%s\n' 'Update failed; previous application release restored.' >&2
-  fi
-  exit 1
-fi
+NODE
 
 if [ "$mode" = bootstrap ]; then
   # Official generator writes a private token file for the long-running service.
@@ -111,3 +130,4 @@ if [ "$mode" = bootstrap ]; then
 fi
 systemctl is-active remote-console.service cloudflared.service
 printf 'Deployed application revision %s (%s).\n' "$(cat "$release/source-revision")" "$mode"
+trap - 0 HUP INT TERM

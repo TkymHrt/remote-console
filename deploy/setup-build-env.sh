@@ -17,7 +17,7 @@ ln -sfn "$runtime/node" "$HOME/.local/bin/node"
 export PATH="$HOME/.local/bin:$runtime:$PATH"
 version=$(node -p "JSON.parse(require('node:fs').readFileSync(process.argv[1], 'utf8')).devEngines.packageManager.version" "$root/package.json")
 if ! command -v pnpm >/dev/null 2>&1 || [ "$(pnpm --version)" != "$version" ]; then
-  npm install --global --prefix "$HOME/.local" "pnpm@$version"
+  npm install --global --prefix "$HOME/.local" --allow-scripts=pnpm "pnpm@$version"
 fi
 node --version
 pnpm --version
