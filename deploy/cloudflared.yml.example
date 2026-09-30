@@ -1,0 +1,19 @@
+# Locally managed tunnel. Replace every account-specific example value.
+# Create credentials with `cloudflared tunnel create remote-console`.
+tunnel: your-tunnel-uuid
+credentials-file: /etc/cloudflared/your-tunnel-uuid.json
+
+# Browser RDP uses a private IP route and Access Infrastructure target,
+# NOT an rdp:// ingress service. Route the PC's IP /32 to this tunnel.
+# cloudflared 2026.9.3 no longer accepts the legacy warp-routing.enabled key.
+
+ingress:
+  - hostname: console.example.com
+    service: http://127.0.0.1:3000
+    originRequest:
+      access:
+        required: true
+        teamName: your-team
+        audTag:
+          - your-dashboard-application-audience-tag
+  - service: http_status:404

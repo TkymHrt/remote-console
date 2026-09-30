@@ -1,0 +1,24 @@
+[Unit]
+Description=Remote Console - Wake-on-LAN and RDP readiness
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=remote-console
+Group=remote-console
+WorkingDirectory=/opt/remote-console
+EnvironmentFile=/etc/remote-console/remote-console.env
+ExecStart=/usr/bin/node /opt/remote-console/dist/server/index.mjs
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=10
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+[Install]
+WantedBy=multi-user.target
