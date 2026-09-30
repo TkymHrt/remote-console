@@ -35,6 +35,7 @@ else
   test -L "$app/dist"
   systemctl cat remote-console.service >/dev/null
   systemctl is-active --quiet cloudflared.service
+  configuration_before=$(sha256sum "$config/remote-console.env" /etc/cloudflared/token)
 fi
 
 if ! getent passwd remote-console >/dev/null; then
@@ -127,6 +128,14 @@ if [ "$mode" = bootstrap ]; then
   fi
   systemctl enable --now cloudflared.service
   systemctl restart cloudflared.service
+fi
+if [ "$mode" = app-only ]; then
+  configuration_after=$(sha256sum "$config/remote-console.env" /etc/cloudflared/token)
+  if [ "$configuration_before" != "$configuration_after" ]; then
+    printf '%s\n' 'Production configuration changed during update; refusing success.' >&2
+    exit 1
+  fi
+  printf '%s\n' 'Existing application configuration and Tunnel token are unchanged.'
 fi
 systemctl is-active remote-console.service cloudflared.service
 printf 'Deployed application revision %s (%s).\n' "$(cat "$release/source-revision")" "$mode"
