@@ -7,6 +7,8 @@
 - `deploy:stage`でfrozen install・静的チェック・テスト・ビルド・commit記録を行い、共通installerの`--app-only`で配置する。trackedな未コミット変更は拒否。
 - 通常更新ではPC/Access環境設定・Tunnel token・Node runtime・cloudflaredを変更しない。新しいreleaseへ切り替え、匿名origin APIの401を起動確認し、起動失敗時は前のアプリ参照へ戻す。
 - Cloudflare初回構築/設定変更と、既存サーバーのアプリ更新の手順を分離。
+- 本番LXCのgit checkoutでfrozen install・静的チェック・25テスト・ビルド・app-only配置を実行。既存EnvironmentFile/Tunnel tokenの変更前後一致をinstallerで確認し、cloudflaredのPIDは変わらず、公開APIは実Access認証で200/readyを維持。
+- mainとの差分をStandards/Specの独立レビューで確認。起動失敗時のunit/release復元と非既定PORTの確認を修正し、指摘事項は再レビューで解決済み。
 
 ## 2026-09-30 — Production deployment automation
 
