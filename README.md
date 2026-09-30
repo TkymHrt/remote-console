@@ -61,6 +61,46 @@ pnpm start     # .envがあれば読み込んでビルド済みアプリを起�
 
 `pnpm build`はフロントエンドの`NODE_ENV=production`を明示する。バックエンド開発用`.env`の`NODE_ENV=development`がReactの本番ビルドに混入しないため。
 
+## 本番の自動配置
+
+アプリはWorkersへ移さない。WranglerはローカルのCloudflare認証・Tunnel作成に使用し、NodeアプリとcloudflaredはLXC上で稼働する。Wranglerや`node_modules`を本番へコピーしない。
+
+```sh
+pnpm install --frozen-lockfile
+cp .env.deploy.example .env.deploy.local
+pnpm exec wrangler whoami
+```
+
+`.env.deploy.local`に個人アカウントID、zone、所有者メール、公開ホスト名、対象PCのIP/MAC/LAN broadcast、SSH aliasを指定する。秘密値は入れない。
+
+既存Wrangler OAuthにはDNS/Zero Trust組織などの権限がない場合がある。今回の実環境でも一部APIが403になったため、対象アカウントとzoneに限定した専用APIトークンを使用した。トークンは既定で`~/.config/remote-console/cloudflare-api-token`から読み込み、0600権限で保存する。別の保存先は`CLOUDFLARE_API_TOKEN_FILE`で指定できる。既存の他プロジェクト用Wrangler認証は変更しない。
+
+```sh
+pnpm run deploy:provision
+pnpm run deploy:prepare
+```
+
+- `deploy:provision`: 正確な所有者メールだけをAllowする管理画面Accessアプリを作成し、公式Wrangler CLIで専用Tunnelを作る。LXC向けHTTP ingress、PCのprivate `/32`ルート、DNSを設定。既存のブラウザRDPアプリ・ターゲット・VNET・DNSを一致確認して再利用し、無関係な既存リソースは変更しない。`.deploy/`へ環境設定・Tunnel専用token・非秘密の状態情報を出力する。
+- `deploy:prepare`: 依存同梱済みのバックエンドとフロントエンドをビルドし、Node **26.10.0**とcloudflared **2026.9.3**の公式ダウンロードをSHA256検証してSSH先へ転送する。対象は今回のx86_64 LXC、配置用ユーザーはopsadmin。APIトークンは転送せず、Tunnel専用tokenだけを700/600の配置ディレクトリに置く。
+- 管理者は表示されるコマンドを一度実行する。sudoパスワードをチャットや設定ファイルへ入れる必要はない。sudoersも変更しない。
+
+```sh
+ssh -t remote-console 'sudo sh /home/opsadmin/remote-console-deploy/install.sh'
+```
+
+installerは`/opt/remote-console/runtime/bin/node`とroot所有の成果物、root 0600のEnvironmentFileを配置し、専用ユーザーのsystemdサービスを起動する。cloudflaredは公式`service install` generatorを使い、常駐プロセスは`/etc/cloudflared/token`を参照する。秘密値をログへ出さない。
+
+更新も同じ`deploy:prepare`とsudoコマンドを使う。ローカル`.deploy/`とリモートのアップロードディレクトリには秘密ファイルが含まれるため、配置・検証後は不要なコピーを削除する。Token失効後のCloudflare再設定には再発行が必要だが、常駐Tunnelと通常のアプリ更新はこのAPIトークンに依存しない。
+
+### 現在の本番確認
+
+- 管理画面: `https://remote-console.tkymhrt.dpdns.org`
+- SSH: `remote-console`。両systemdサービスはactive、NodeのHTTP待受は127.0.0.1のみ、Tunnelはhealthy。
+- 外部の未認証要求はAccessログインへ302、LXCのJWTなしAPIは401。所有者の実Access認証後、実PCのTCP 3389に基づくreadyとブラウザRDPのWindowsログイン画面まで確認した。
+- Windowsの有線NICでMagic Packet/S5 WOLは有効、Fast Startupは無効。LXCから実LAN broadcastへの102-byte送信は確認済み。作業中PCを停止・スリープ・再起動したり、RDPログインによって物理コンソールをロックしたりはしていない。
+- 現在のPCアドレスはDHCP取得。ルーターで現在のIP/MACのDHCP予約を確認すること。OSのネットワーク設定を勝手に変更していない。
+- 電源停止状態からのWOL復帰は、作業を止めてもよいタイミングで本人が別途検証する。Windowsのパスワードはこのアプリにも自動化スクリプトにも保存しない。
+
 ## 設定
 
 [`.env.example`](.env.example)を基に、環境変数またはsystemdのEnvironmentFileを設定する。MAC・IP・URLの変更をブラウザから受け付けない。
@@ -116,14 +156,14 @@ sudo install -d -o root -g remote-console -m 0755 /opt/remote-console
 sudo install -d -o root -g root -m 0700 /etc/remote-console
 ```
 
-ビルドは管理者の書き込み可能なcheckoutで行い、完成した`dist`・`node_modules`・`package.json`だけをroot所有の`/opt/remote-console`へコピーする。サービスユーザーでinstall/buildを実行しない。依存関係はlockfileで固定し、pnpmの既定のローカルvirtual store（`node_modules/.pnpm`）を含むディレクトリ全体をコピーする。ホーム配下への外部symlinkを持つ独自のglobal virtual store設定は使わない。
+ビルドは管理者の書き込み可能なcheckoutで行い、完成した`dist`だけをroot所有の`/opt/remote-console`へコピーする。バックエンドは必要なHono/Zod/jose依存を同梱し、外部npm importが残るとビルドを拒否する。本番に`node_modules`は不要。サービスユーザーでinstall/buildを実行しない。
 
 ```sh
 pnpm install --frozen-lockfile
 pnpm check
 pnpm test
 pnpm build
-sudo cp -a dist node_modules package.json /opt/remote-console/
+sudo cp -a dist /opt/remote-console/
 sudo chown -R root:remote-console /opt/remote-console
 sudo chmod -R g+rX /opt/remote-console
 sudo install -o root -g root -m 0600 .env.example /etc/remote-console/remote-console.env

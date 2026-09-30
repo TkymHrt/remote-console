@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-09-30 — Production deployment automation
+
+- Wrangler 4.143.0を開発依存へ追加。既存OAuth認証を利用して個人アカウント/zoneを発見し、必要なDNS/Zero Trust権限は本人承認の専用APIトークンで取得。対象アカウント/zoneのみ、期限7日、ローカル0600で保存。
+- `deploy:provision`で所有者メール限定のAccessアプリ、専用のremote-managed Tunnel、管理画面DNS、Windows PCのprivate `/32`経路を設定。既存RDPアプリ/ターゲット/VNET/DNSは再利用。
+- `deploy:prepare`と一度の本人sudo実行でUbuntu 26.04 LXCへ配置。Node 26.10.0/cloudflared 2026.9.3は公式配布のSHA256検証済み。
+- Hono/Zod/joseをNode成果物へ同梱し、外部npm importを禁止。本番にWrangler・node_modules・APIトークンは転送しない。
+- API一覧はpaginationを収集、DNSはexact-hostname lookup。既存Tunnelは保護された専用ingressを確認し、再実行でconfiguration PUTしない。競合は変更前に拒否。
+- 再配置時は稼働中Nodeを停止してからruntime archiveを展開し、ETXTBSYを避ける。
+
+### 実環境で確認したこと
+
+- `remote-console`/`cloudflared`両systemdサービスがactive、HTTPは127.0.0.1:3000のみ、Cloudflare Tunnelはhealthy。
+- 本番LXCから作業中Windows PCのTCP 3389が接続を受け付けること。
+- 公開管理画面の未認証APIがAccessログインへ302、LXC内のJWTなしAPIが401。
+- 本人の実Access認証後、公開`/api/pc`が200/readyを返し、画面のRDPリンクから実CloudflareブラウザRDPの有効なWindowsログインフォームへ遷移。
+- 本番LXCから実際のLAN broadcastへ対象MACの102-byte WOLパケットを送信。作業中PCの電源状態は変更していない。
+- NICのMagic Packet/S5 WOLが有効、Fast Startup無効、RDPのTLS/NLAが有効。IPはDHCP取得のため、ルーターで予約を確認する必要がある。
+
+Windowsログインは物理コンソールをロックし得るため実行していない。停止/スリープ状態からのWOL復帰も、本人が作業を止めてよいタイミングで別途検証する。Windowsパスワードは取得・保存していない。
+
 ## 2026-09-30 — Rebuild
 
 `2026-09-30-rebuild`の空のブランチから再構築。過去の実装は参照していない。

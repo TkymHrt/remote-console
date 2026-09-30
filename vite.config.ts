@@ -14,6 +14,21 @@ export default defineConfig(({ mode }) => {
       platform: "node",
       target: "node26",
       format: "esm",
+      deps: {
+        alwaysBundle: [
+          /^@hono\/node-server(?:\/|$)/,
+          /^hono(?:\/|$)/,
+          /^jose(?:\/|$)/,
+          /^zod(?:\/|$)/,
+        ],
+        onlyBundle: [
+          /^@hono\/node-server(?:\/|$)/,
+          /^hono(?:\/|$)/,
+          /^jose(?:\/|$)/,
+          /^zod(?:\/|$)/,
+        ],
+        onlyImport: [],
+      },
     },
     test: {
       include: ["server/**/*.test.ts"],

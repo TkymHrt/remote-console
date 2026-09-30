@@ -10,7 +10,9 @@
     "check": "vp check",
     "typecheck": "tsc -b",
     "test": "vp test",
-    "start": "node --env-file-if-exists=.env dist/server/index.mjs"
+    "start": "node --env-file-if-exists=.env dist/server/index.mjs",
+    "deploy:provision": "node --env-file=.env.deploy.local deploy/provision.mjs",
+    "deploy:prepare": "node deploy/prepare.mjs"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.2",
@@ -35,7 +37,8 @@
     "tailwindcss": "^4.3.3",
     "typescript": "7.0.2",
     "vite": "catalog:",
-    "vite-plus": "catalog:"
+    "vite-plus": "catalog:",
+    "wrangler": "^4.143.0"
   },
   "devEngines": {
     "packageManager": {
